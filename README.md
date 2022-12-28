@@ -7,8 +7,7 @@
 
 La forma ideal de realizar la instalación es ingresando los siguientes comandos::
 
-'''
-./configure
-make
-make install
-'''
+```
+pip install -r requirements
+
+```
