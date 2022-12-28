@@ -8,6 +8,18 @@
 La forma ideal de realizar la instalación es ingresando los siguientes comandos::
 
 ```
+
 pip install -r requirements
+
+```
+
+## Uso de la herramienta
+
+Puede utilizar el siguiente comando comenzar a emplear NoAuth:
+
+```
+1. Ejecutando python:
+
+python app.py -f [ruta del archivo]
 
 ```
