@@ -1,4 +1,4 @@
-import  json
+import  json, re
 from models.entities.Request import Request
 
 #---------------------------------------------------------------------------
@@ -100,3 +100,74 @@ class Parser():
                     self.find_request(array_item[lengh]['item'], len(array_item[lengh]['item']) -1)
         else:
             return list_object
+
+
+
+    #---------------------------------------------------------------------------
+    # Methods that get environment variables
+    #---------------------------------------------------------------------------
+    def get_environment(self, file_env):
+
+        dict_data = {}
+        keys = file_env.keys()
+        try:
+            if 'values' in file_env:
+                for i in range(len(file_env['values'])):
+                    dict_env = file_env['values'][i]
+                    if 'key' in dict_env or 'value' in dict_env:
+                        #if dict_env['value']!="":
+                        dict_data[ dict_env['key'] ] = dict_env['value']
+
+                    else:
+                        return None
+            else:
+                return None
+
+        except Exception as e:
+            raise Exception(e)
+
+        return dict_data.items()
+
+    #---------------------------------------------------------------------------
+    # Method that transforms a json to text
+    #---------------------------------------------------------------------------
+    def transform_json_text(self, filename ):
+        with open(filename, 'r+') as fr:
+            pre_ = fr.read()
+        return pre_
+
+    #---------------------------------------------------------------------------
+    # Recursive method that replaces expressions with their respective values
+    #---------------------------------------------------------------------------
+    def recursive_replace( self, file_text, list_env, lengh):
+        if lengh < 0:
+            return file_text
+
+        else:
+            if isinstance(file_text, str):
+                if list(list_env)[lengh][0]:
+                    if '{{' +list(list_env)[lengh][0] + '}}' in file_text:
+                        file_text = file_text.replace("{{"+list(list_env)[lengh][0]+"}}", list(list_env)[lengh][1])
+                        return self.recursive_replace(file_text, list_env,  lengh - 1)
+                    else:
+                        return self.recursive_replace(file_text, list_env, lengh - 1)
+            else:
+                return None
+
+
+
+
+    #---------------------------------------------------------------------------
+    # Verify expression in content file
+    #---------------------------------------------------------------------------
+    def check_expression(self, file):
+        """
+        identify expression {{variable}} in content file
+        """
+        exp = '{[{]|}}'
+
+        m = re.search(exp, file)
+        if m.group(0) == '{{':
+            return True
+        else:
+            return False
