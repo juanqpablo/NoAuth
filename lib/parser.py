@@ -32,7 +32,7 @@ class Parser():
     # Get items from request
     #---------------------------------------------------------------------------
     def get_items_request(self, list_request, without_token = True, without_cookie = False):
-        _body = {}
+        body = {}
         list_headers = {}
         method = ""
         dict_data = {}
