@@ -5,7 +5,7 @@
 
 ## Installing
 
-La forma ideal de realizar la instalación es ingresando los siguientes comandos::
+La forma ideal de realizar la instalación es ingresando los siguientes comandos:
 
 ```
 
@@ -13,19 +13,26 @@ pip install -r requirements
 
 ```
 
+## Parámetros definidos
+- -f: Argumento para indicar el nombre del archivo postman a procesar.
+- -e: Argumento para indicar el nombre del archivo con las variables de ambiente (postman).
+- -t: Argumento para indicar el JWT/TOKEN que se reemplazará en las solicitudes.
+
 ## Uso de la herramienta
 
 Puede utilizar el siguiente comando comenzar a emplear NoAuth:
 
+### 1. Ejecutando python:
+
+### 1.1 Si el archivo postman no contiene variables de ambiente, entonces puede llevar a cabo su ejecución de la siguiente manera.
+
 ```
-1. Ejecutando python:
-
-1.1 Si el archivo postman no contiene variables de ambiente, entonces puede llevar a cabo su ejecución de la siguiente manera.
-
 python app.py -f [ruta archivo postman_collection.json]
 
-1.2 Si el archivo contiene variables de ambiente, entonces debe añadir el argumento -e, de la siguiente forma:
+```
 
+### 1.2 Si el archivo contiene variables de ambiente, entonces debe añadir el argumento -e, de la siguiente forma:
+
+```
 python app.py -f [ruta archivo postman_collection.json] -e [ruta archivo postman_environment.json] 
-
 ```
