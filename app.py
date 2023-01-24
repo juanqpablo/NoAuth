@@ -19,8 +19,8 @@ from models.entities.Request import Request
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="Argumento para indicar el nombre del archivo postman a procesar.")
-    parser.add_argument("-e", "--env",  help="Argumento para indicar el nombre del archivo con las variables de ambiente (postman)")
-
+    parser.add_argument("-e", "--env",  help="Argumento para indicar el nombre del archivo con las variables de ambiente (postman).")
+    parser.add_argument("-t", "--token",  help="Argumento para indicar el JWT/TOKEN que se reemplzará en las solicitudes.")
     args = parser.parse_args()
     return args
 #-------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ def main():
     noauth.print_banner()
     animation.load_animation("analizando la información del archivo...")
 
-    if args.file:
+    if (args.file and not args.env and not args.token):
         text_file = parser.transform_json_text(args.file)
         if parser.check_expression(text_file):
             noauth.print_banner()
@@ -55,7 +55,23 @@ def main():
 
 
 
-    if (args.file and args.env):
+    if (args.file and args.token and not args.env):
+        text_file = parser.transform_json_text(args.file)
+        if parser.check_expression(text_file):
+            noauth.print_banner()
+            noauth.print_not_environment()
+        else:
+            data = parser.read_file(args.file)
+            total_request = parser.get_parser_request(data)
+            list_obj_req = parser.get_items_request(total_request, args.token)
+            noauth.print_banner()
+            animation.load_animation("enviando solicitudes http...")
+            noauth.print_banner()
+            obj_res = noauth.request(list_obj_req)
+
+
+
+    if (args.file and args.env and not args.token):
         data_pre = parser.transform_json_text(args.file)
         file_env = parser.read_file(args.env)
         list_env = parser.get_environment(file_env)
@@ -70,6 +86,22 @@ def main():
         noauth.print_banner()
         obj_res = noauth.request(list_obj_req)
 
+
+
+    if (args.file and args.env and args.token):
+        data_pre = parser.transform_json_text(args.file)
+        file_env = parser.read_file(args.env)
+        list_env = parser.get_environment(file_env)
+        result = parser.recursive_replace(data_pre, list_env, len(list(list_env))-1)
+        #convert string to  object
+        json_object = json.loads(result)
+        #print(json_object)
+        total_request = parser.get_parser_request(json_object)
+        list_obj_req = parser.get_items_request(total_request, args.token)
+        noauth.print_banner()
+        animation.load_animation("enviando solicitudes http...")
+        noauth.print_banner()
+        obj_res = noauth.request(list_obj_req)
 
 
 if __name__ == '__main__':
