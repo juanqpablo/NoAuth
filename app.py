@@ -21,6 +21,7 @@ def get_args():
     parser.add_argument("-f", "--file", help="Argumento para indicar el nombre del archivo postman a procesar.")
     parser.add_argument("-e", "--env",  help="Argumento para indicar el nombre del archivo con las variables de ambiente (postman).")
     parser.add_argument("-t", "--token",  help="Argumento para indicar el JWT/TOKEN que se reemplzará en las solicitudes.")
+    parser.add_argument("-wt", "--without",  help="Argumento para indicar se el request se realizará con/sin JWT/TOKEN")
     args = parser.parse_args()
     return args
 #-------------------------------------------------------------------------------
@@ -55,12 +56,13 @@ def main():
 
 
 
-    if (args.file and args.token and not args.env):
+    if (args.file and args.token and args.without and not args.env):
         text_file = parser.transform_json_text(args.file)
         if parser.check_expression(text_file):
             noauth.print_banner()
             noauth.print_not_environment()
         else:
+            print(2)
             data = parser.read_file(args.file)
             total_request = parser.get_parser_request(data)
             list_obj_req = parser.get_items_request(total_request, args.token)
@@ -71,7 +73,7 @@ def main():
 
 
 
-    if (args.file and args.env and not args.token):
+    if (args.file and args.env and not args.token and not args.without):
         data_pre = parser.transform_json_text(args.file)
         file_env = parser.read_file(args.env)
         list_env = parser.get_environment(file_env)
@@ -88,7 +90,7 @@ def main():
 
 
 
-    if (args.file and args.env and args.token):
+    if (args.file and args.env and args.token and args.without):
         data_pre = parser.transform_json_text(args.file)
         file_env = parser.read_file(args.env)
         list_env = parser.get_environment(file_env)
