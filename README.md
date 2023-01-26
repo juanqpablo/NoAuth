@@ -23,7 +23,7 @@ pip install -r requirements
 
 Puede utilizar el siguiente comando comenzar a emplear NoAuth:
 
-### 1. Ejecutando python:
+#### 1. Ejecutando desde python:
 
 1.1. Si el archivo postman no contiene variables de ambiente, entonces puede llevar a cabo su ejecución de la siguiente manera.
 
@@ -36,11 +36,30 @@ python app.py -f [ruta archivo postman_collection.json]
 
 ```
 python app.py -f [ruta archivo postman_collection.json] -e [ruta archivo postman_environment.json] 
+
 ```
 
 1.3. Si desea realizar solicitudes, utilizando un token de autenticación ingresado a través de argumentos, puede realizar su ejecución de la siguiente forma:
 
 ```
-python app.py -f [ruta archivo postman_collection.json] -t "[token/ Bearer JWT]" 
+python app.py -f [ruta archivo postman_collection.json] -t "[token/ Bearer JWT] -wt [True/False]" 
+
 ```
 
+#### Ejemplos de ejecución:
+
+1.1 En caso de validar los endpoint de una API y el "postman_collection" no requiera de "postman_environmet", solo bastaría ingresar el comando de la siguiente forma.
+
+```
+python app.py -f "files\API.postman_collection.json" 
+
+```
+
+1.2 Este comando se utilizaría en caso de que se desee validar los endpoints de alguna API, pero el postman_collection requiera de variables de ambiente, en este caso tambien es posible indicar cual es el contenido de dichas variables a través del documento "postman_environment".
+
+```
+python app.py -f "files\API.postman_collection.json" -e "files\API.postman_environment.json" 
+
+```
+#### NOTA
+Para más información, puede verificar todas las funcionalidades ingresando el comando "python app.py -h" y se desplegaran las opciones de ayuda.
