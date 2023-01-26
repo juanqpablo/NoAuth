@@ -31,7 +31,8 @@ class Parser():
     #---------------------------------------------------------------------------
     # Get items from request
     #---------------------------------------------------------------------------
-    def get_items_request(self, list_request, without_token = True, without_cookie = False, token = None):
+    def get_items_request(self, list_request, without_token=True, without_cookie = False, token = None):
+
         body = {}
         list_headers = {}
         method = ""
@@ -62,16 +63,20 @@ class Parser():
             # remove of each object depending on the condition and stores the remaining
             for h in header:
                 if h['key']!="":
-                    if (h['key']!= 'authorization' and without_token == True) and without_cookie == False:
-                        if token!= None:
-                            headers[h['key']] = str("Bearer ") + token
+                    if h['key']== 'authorization':
+                        if without_token == 'False':
+                            if token!= None:
+                                headers[h['key']] = str("Bearer ") + token
+
+                            else:
+                                headers[h['key']] = h['value']
+
+                    else:
+                        if without_token == 'True':
+                            headers[h['key']] = h['value']
 
                         else:
                             headers[h['key']] = h['value']
-
-                    if (h['key']!= 'cookie' and  without_cookie == True) and ( h['key']!= 'authorization' and without_token == True):
-                        headers[h['key']] = h['value']
-
                 else:
                     continue
 

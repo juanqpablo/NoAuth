@@ -7,6 +7,7 @@ import colorama
 from colorama import Fore
 from colorama import Style
 import argparse, time
+from distutils import util
 
 colorama.init(strip=False)
 #-------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ def get_args():
     parser.add_argument("-f", "--file", help="Argumento para indicar el nombre del archivo postman a procesar.")
     parser.add_argument("-e", "--env",  help="Argumento para indicar el nombre del archivo con las variables de ambiente (postman).")
     parser.add_argument("-t", "--token",  help="Argumento para indicar el JWT/TOKEN que se reemplzará en las solicitudes.")
-    parser.add_argument("-wt", "--without",  help="Argumento para indicar se el request se realizará con/sin JWT/TOKEN")
+    parser.add_argument("-wt", "--without", choices=('True','False'), help="Flag para indicar si el request se realizará con/sin JWT/TOKEN (Default True)")
     args = parser.parse_args()
     return args
 #-------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ def main():
     noauth.print_banner()
     animation.load_animation("analizando la información del archivo...")
 
-    if (args.file and not args.env and not args.token):
+    if (args.file and not args.env and not args.token and not args.without):
         text_file = parser.transform_json_text(args.file)
         if parser.check_expression(text_file):
             noauth.print_banner()
@@ -62,10 +63,15 @@ def main():
             noauth.print_banner()
             noauth.print_not_environment()
         else:
-            print(2)
+            #print(args.without)
             data = parser.read_file(args.file)
             total_request = parser.get_parser_request(data)
-            list_obj_req = parser.get_items_request(total_request, args.token)
+            list_obj_req = parser.get_items_request(
+                                                    list_request = total_request,
+                                                    without_token = args.without,
+                                                    without_cookie = False,
+                                                    token = args.token
+                                                    )
             noauth.print_banner()
             animation.load_animation("enviando solicitudes http...")
             noauth.print_banner()
@@ -90,7 +96,7 @@ def main():
 
 
 
-    if (args.file and args.env and args.token and args.without):
+    if (args.file and args.env and args.token and args.without ):
         data_pre = parser.transform_json_text(args.file)
         file_env = parser.read_file(args.env)
         list_env = parser.get_environment(file_env)
@@ -99,7 +105,12 @@ def main():
         json_object = json.loads(result)
         #print(json_object)
         total_request = parser.get_parser_request(json_object)
-        list_obj_req = parser.get_items_request(total_request, args.token)
+        list_obj_req = parser.get_items_request(
+                                                list_request = total_request,
+                                                without_token = args.without,
+                                                without_cookie = False,
+                                                token = args.token
+                                                )
         noauth.print_banner()
         animation.load_animation("enviando solicitudes http...")
         noauth.print_banner()
