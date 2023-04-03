@@ -11,7 +11,7 @@ class Parser():
     #           Read File
     #---------------------------------------------------------------------------
     def read_file(self, URL):
-        with open(URL, 'r') as f:
+        with open(URL, 'r', encoding="utf8") as f:
            data = json.load(f)
         return data
 
@@ -142,7 +142,7 @@ class Parser():
     # Method that transforms a json to text
     #---------------------------------------------------------------------------
     def transform_json_text(self, filename ):
-        with open(filename, 'r+') as fr:
+        with open(filename, 'r+', encoding="utf8") as fr:
             pre_ = fr.read()
         return pre_
 
